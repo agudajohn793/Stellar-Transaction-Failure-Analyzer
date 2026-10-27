@@ -1,0 +1,30 @@
+{
+  "source": "Synthetic XDR generated with Stellar SDK 17.4.0",
+  "records": [
+    { "operationType": "manageSellOffer", "code": "manageSellOfferCrossSelf", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD////+AAAAAA=" },
+    { "operationType": "manageSellOffer", "code": "manageSellOfferSellNotAuthorized", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD/////AAAAAA=" },
+    { "operationType": "manageSellOffer", "code": "manageSellOfferBuyNotAuthorized", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD////+wAAAAA=" },
+    { "operationType": "manageSellOffer", "code": "manageSellOfferLineFull", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD////+gAAAAA=" },
+    { "operationType": "manageSellOffer", "code": "manageSellOfferSellNoIssuer", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD////9wAAAAA=" },
+    { "operationType": "manageSellOffer", "code": "manageSellOfferBuyNoIssuer", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD////9gAAAAA=" },
+    { "operationType": "manageSellOffer", "code": "manageSellOfferNotFound", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAD////9QAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferCrossSelf", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM////+AAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferSellNotAuthorized", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM/////AAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferBuyNotAuthorized", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM////+wAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferLineFull", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM////+gAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferSellNoIssuer", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM////9wAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferBuyNoIssuer", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM////9gAAAAA=" },
+    { "operationType": "manageBuyOffer", "code": "manageBuyOfferNotFound", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAM////9QAAAAA=" },
+    { "operationType": "changeTrust", "code": "changeTrustSelfNotAllowed", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAG////+wAAAAA=" },
+    { "operationType": "changeTrust", "code": "changeTrustTrustLineMissing", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAG////+gAAAAA=" },
+    { "operationType": "changeTrust", "code": "changeTrustCannotDelete", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAG////+QAAAAA=" },
+    { "operationType": "changeTrust", "code": "changeTrustNotAuthMaintainLiabilities", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAG////+AAAAAA=" },
+    { "operationType": "beginSponsoringFutureReserves", "code": "beginSponsoringFutureReservesAlreadySponsored", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAQ/////gAAAAA=" },
+    { "operationType": "beginSponsoringFutureReserves", "code": "beginSponsoringFutureReservesRecursive", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAQ/////QAAAAA=" },
+    { "operationType": "endSponsoringFutureReserves", "code": "endSponsoringFutureReservesNotSponsored", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAR/////wAAAAA=" },
+    { "operationType": "revokeSponsorship", "code": "revokeSponsorshipDoesNotExist", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAS/////wAAAAA=" },
+    { "operationType": "revokeSponsorship", "code": "revokeSponsorshipNotSponsor", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAS/////gAAAAA=" },
+    { "operationType": "revokeSponsorship", "code": "revokeSponsorshipLowReserve", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAS/////QAAAAA=" },
+    { "operationType": "revokeSponsorship", "code": "revokeSponsorshipOnlyTransferable", "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAS/////AAAAAA=" }
+  ]
+}

@@ -361,6 +361,34 @@ export const errorCatalog: ErrorMapping[] = [
     sourceUrl: operationDocs
   },
   {
+    code: "changeTrustSelfNotAllowed",
+    title: "Issuer cannot create its own trustline",
+    explanation: "An asset issuer cannot create a trustline to its own asset.",
+    checks: ["Check whether the operation's source account is also the asset issuer.", "Use an account other than the issuer to establish a trustline."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "changeTrustTrustLineMissing",
+    title: "Required trustline does not exist",
+    explanation: "The trustline required by the change-trust operation is missing.",
+    checks: ["Verify the account and asset for the trustline operation.", "Check whether the trustline was removed or the account is the issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "changeTrustCannotDelete",
+    title: "Trustline cannot be removed",
+    explanation: "The trustline cannot be deleted while it has a nonzero balance or outstanding liabilities.",
+    checks: ["Settle the asset balance and remove liabilities from open offers.", "Check for claimable balances and sponsorship conditions before deleting the trustline."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "changeTrustNotAuthMaintainLiabilities",
+    title: "Issuer does not allow trustline liabilities",
+    explanation: "The issuer's authorization flags do not allow this account to maintain liabilities for the asset.",
+    checks: ["Check the asset issuer's trustline authorization flags.", "Ask the issuer to update authorization if the account should keep offers or other liabilities."],
+    sourceUrl: operationDocs
+  },
+  {
     code: "manageSellOfferUnderfunded",
     title: "Sell offer is underfunded",
     explanation: "The selling account cannot cover the amount of the asset offered for sale.",
@@ -414,6 +442,153 @@ export const errorCatalog: ErrorMapping[] = [
     title: "Insufficient reserve for buy offer",
     explanation: "The account cannot meet the minimum XLM reserve required for the offer's ledger entry.",
     checks: ["Check the account's available XLM and minimum balance.", "Review existing offers, subentries, and sponsorship."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferCrossSelf",
+    title: "Sell offer would cross the account's own offer",
+    explanation: "The new sell offer would match an offer owned by the same account.",
+    checks: ["Review open offers for the selling account and asset pair.", "Adjust the offer price or cancel the conflicting offer before retrying."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferCrossSelf",
+    title: "Buy offer would cross the account's own offer",
+    explanation: "The new buy offer would match an offer owned by the same account.",
+    checks: ["Review open offers for the buying account and asset pair.", "Adjust the offer price or cancel the conflicting offer before retrying."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferSellNotAuthorized",
+    title: "Selling asset trustline is not authorized",
+    explanation: "The account is not authorized to sell the asset in this offer.",
+    checks: ["Check the selling trustline's authorization flags.", "Ask the asset issuer to authorize the account if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferSellNotAuthorized",
+    title: "Selling asset trustline is not authorized",
+    explanation: "The account is not authorized to sell the asset in this offer.",
+    checks: ["Check the selling trustline's authorization flags.", "Ask the asset issuer to authorize the account if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferBuyNotAuthorized",
+    title: "Buying asset trustline is not authorized",
+    explanation: "The account is not authorized to hold the asset it would receive from this offer.",
+    checks: ["Check the buying trustline's authorization flags.", "Ask the asset issuer to authorize the account if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferBuyNotAuthorized",
+    title: "Buying asset trustline is not authorized",
+    explanation: "The account is not authorized to hold the asset it would receive from this offer.",
+    checks: ["Check the buying trustline's authorization flags.", "Ask the asset issuer to authorize the account if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferLineFull",
+    title: "Buying asset trustline is full",
+    explanation: "The account cannot receive more of the buying asset because its trustline limit would be exceeded.",
+    checks: ["Check the buying trustline's balance and limit.", "Reduce the offer amount or increase the limit if the issuer permits it."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferLineFull",
+    title: "Buying asset trustline is full",
+    explanation: "The account cannot receive more of the buying asset because its trustline limit would be exceeded.",
+    checks: ["Check the buying trustline's balance and limit.", "Reduce the offer amount or increase the limit if the issuer permits it."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferSellNoIssuer",
+    title: "Selling asset issuer does not exist",
+    explanation: "The issuer for the asset being sold does not exist on the selected network.",
+    checks: ["Verify the selling asset's issuer account ID.", "Confirm the asset definition and selected network."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferSellNoIssuer",
+    title: "Selling asset issuer does not exist",
+    explanation: "The issuer for the asset being sold does not exist on the selected network.",
+    checks: ["Verify the selling asset's issuer account ID.", "Confirm the asset definition and selected network."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferBuyNoIssuer",
+    title: "Buying asset issuer does not exist",
+    explanation: "The issuer for the asset being bought does not exist on the selected network.",
+    checks: ["Verify the buying asset's issuer account ID.", "Confirm the asset definition and selected network."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferBuyNoIssuer",
+    title: "Buying asset issuer does not exist",
+    explanation: "The issuer for the asset being bought does not exist on the selected network.",
+    checks: ["Verify the buying asset's issuer account ID.", "Confirm the asset definition and selected network."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferNotFound",
+    title: "Offer to update or cancel was not found",
+    explanation: "The offer ID requested for update or cancellation does not exist.",
+    checks: ["Reload the account's current offer IDs.", "Check whether the offer was already filled, canceled, or replaced."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferNotFound",
+    title: "Offer to update or cancel was not found",
+    explanation: "The offer ID requested for update or cancellation does not exist.",
+    checks: ["Reload the account's current offer IDs.", "Check whether the offer was already filled, canceled, or replaced."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "beginSponsoringFutureReservesAlreadySponsored",
+    title: "Account is already sponsored",
+    explanation: "The account already has an active reserve sponsor and cannot begin another sponsorship.",
+    checks: ["Review the account's current sponsoring relationship.", "End or resolve the existing sponsorship before starting a new one."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "beginSponsoringFutureReservesRecursive",
+    title: "Sponsorship would be recursive",
+    explanation: "The requested sponsorship would create a recursive sponsor relationship.",
+    checks: ["Review the source and sponsored accounts in the sponsorship sequence.", "Reorder or change the sponsoring account to avoid a cycle."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "endSponsoringFutureReservesNotSponsored",
+    title: "No sponsorship is active to end",
+    explanation: "The account has no active sponsorship relationship matching this end-sponsorship operation.",
+    checks: ["Check the operation source and sponsorship sequence.", "Confirm a matching begin-sponsoring operation is active for this account."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "revokeSponsorshipDoesNotExist",
+    title: "Sponsored ledger entry does not exist",
+    explanation: "The ledger entry targeted by the revoke-sponsorship operation does not exist.",
+    checks: ["Verify the ledger entry key and owning account.", "Check whether the entry was already removed."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "revokeSponsorshipNotSponsor",
+    title: "Account is not the entry's sponsor",
+    explanation: "The operation source is not the current sponsor of the targeted ledger entry.",
+    checks: ["Verify the current sponsoring account for the entry.", "Submit the operation from the sponsor or use the appropriate sponsorship transfer flow."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "revokeSponsorshipLowReserve",
+    title: "Revoking sponsorship would violate reserve",
+    explanation: "Removing the sponsorship would leave an account unable to meet its minimum XLM reserve.",
+    checks: ["Check the sponsored account's available XLM and subentry reserve.", "Fund the account or adjust its ledger entries before revoking sponsorship."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "revokeSponsorshipOnlyTransferable",
+    title: "This sponsorship cannot be revoked",
+    explanation: "The targeted ledger entry only permits sponsorship transfer, not direct sponsorship revocation.",
+    checks: ["Use a sponsorship transfer sequence if the sponsor should change.", "Verify the targeted ledger entry supports sponsorship transfer."],
     sourceUrl: operationDocs
   },
   {
