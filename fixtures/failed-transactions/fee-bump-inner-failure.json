@@ -1,0 +1,5 @@
+{
+  "resultXdr": "AAAAAAAAAMj////zAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZP////kAAAAAAAAAAA==",
+  "resultCode": "txFeeBumpInnerFailed",
+  "innerResultCode": "txInsufficientBalance"
+}

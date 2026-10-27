@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "types": ["node", "vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "@stellar-failure/decoder": ["packages/decoder/src/index.ts"],
+      "@stellar-failure/error-catalog": ["packages/error-catalog/src/index.ts"],
+      "@stellar-failure/diagnosis-engine": ["packages/diagnosis-engine/src/index.ts"],
+      "@stellar-failure/stellar-client": ["packages/stellar-client/src/index.ts"]
+    },
+    "plugins": [{ "name": "next" }]
+  },
+  "include": ["apps/**/*.ts", "apps/**/*.tsx", "packages/**/*.ts", "next-env.d.ts", "vitest.config.mts"],
+  "exclude": ["node_modules"]
+}

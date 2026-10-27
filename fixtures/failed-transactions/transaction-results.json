@@ -1,0 +1,15 @@
+{
+  "insufficientBalance": {
+    "resultXdr": "AAAAAAAAAGT////5AAAAAA==",
+    "resultCode": "txInsufficientBalance"
+  },
+  "malformed": {
+    "resultXdr": "AAAAAAAAAGT////wAAAAAA==",
+    "resultCode": "txMalformed"
+  },
+  "paymentUnderfunded": {
+    "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAB/////gAAAAA=",
+    "resultCode": "txFailed",
+    "operationResultCode": "paymentUnderfunded"
+  }
+}
