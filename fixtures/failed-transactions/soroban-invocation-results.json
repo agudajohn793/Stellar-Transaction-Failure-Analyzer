@@ -1,0 +1,21 @@
+{
+  "source": "Synthetic XDR generated with Stellar SDK 17.4.0",
+  "records": [
+    {
+      "code": "invokeHostFunctionTrapped",
+      "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAY/////gAAAAA="
+    },
+    {
+      "code": "invokeHostFunctionResourceLimitExceeded",
+      "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAY/////QAAAAA="
+    },
+    {
+      "code": "invokeHostFunctionEntryArchived",
+      "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAY/////AAAAAA="
+    },
+    {
+      "code": "invokeHostFunctionInsufficientRefundableFee",
+      "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAY////+wAAAAA="
+    }
+  ]
+}
