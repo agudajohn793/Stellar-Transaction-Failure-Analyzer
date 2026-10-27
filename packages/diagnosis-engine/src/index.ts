@@ -38,6 +38,7 @@ export interface TransactionDiagnosis {
   source?: "rpc" | "horizon" | "xdr";
   feeCharged: string;
   operations: OperationDiagnosis[];
+  primaryFailedOperation?: Pick<OperationDiagnosis, "index" | "operationType" | "resultCode">;
   diagnosticEvents?: DecodedDiagnosticEvent[];
 }
 
@@ -60,10 +61,12 @@ export function diagnoseTransaction(input: TransactionInput): TransactionDiagnos
   const mapping = getErrorMapping(decoded.innerResultCode ?? decoded.resultCode);
   const failed = decoded.resultCode !== "txSuccess" && decoded.resultCode !== "txFeeBumpInnerSuccess";
   const operations = decoded.operations.map(diagnoseOperation);
-  const failedOperation = operations.find((operation) => operation.failed && operation.known);
+  const failedOperation = operations.find((operation) => operation.failed);
+  const mappedFailedOperation = failedOperation?.known ? failedOperation : undefined;
+  const hasFailedTransactionResult = decoded.resultCode === "txFailed" || decoded.innerResultCode === "txFailed";
   const topMapping = mapping ?? (
-    decoded.resultCode === "txFailed" || decoded.innerResultCode === "txFailed"
-      ? failedOperation
+    hasFailedTransactionResult
+      ? mappedFailedOperation
       : undefined
   );
 
@@ -82,6 +85,13 @@ export function diagnoseTransaction(input: TransactionInput): TransactionDiagnos
     source: input.source ?? "xdr",
     feeCharged: decoded.feeCharged,
     operations,
+    primaryFailedOperation: hasFailedTransactionResult && mappedFailedOperation
+      ? {
+          index: mappedFailedOperation.index,
+          operationType: mappedFailedOperation.operationType,
+          resultCode: mappedFailedOperation.resultCode
+        }
+      : undefined,
     diagnosticEvents: input.diagnosticEventsXdr === undefined
       ? undefined
       : decodeDiagnosticEvents(input.diagnosticEventsXdr)
