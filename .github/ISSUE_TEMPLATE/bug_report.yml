@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a reproducible problem with the analyzer or diagnosis output.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include private keys, secrets, or transaction data you are not comfortable sharing publicly.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the input type and network. Redact hashes or XDR if needed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, and app version or commit.
+    validations:
+      required: false

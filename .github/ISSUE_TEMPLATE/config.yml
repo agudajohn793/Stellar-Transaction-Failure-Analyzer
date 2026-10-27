@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Stellar developer documentation
+    url: https://developers.stellar.org/
+    about: Consult official Stellar documentation for protocol and SDK questions.
+  - name: Security vulnerability report
+    url: https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/security/advisories/new
+    about: Report vulnerabilities privately instead of opening a public issue.
