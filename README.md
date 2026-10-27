@@ -83,7 +83,7 @@ For a public deployment, configure edge-level rate limiting for `/api/analyze` t
 
 ## Deployment
 
-Deploy this repository to Vercel using the [Vercel GitHub import](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fagudajohn793%2FStellar-Transaction-Failure-Analyzer). Select `apps/web` as the project root and configure the install command as `npm ci` and build command as `npm run build -w @stellar-failure/web`. Before announcing a public deployment, configure edge rate limiting for `/api/analyze`, verify the deployed URL and network lookups, and add the live URL to the GitHub repository's homepage field.
+Deploy this repository to Vercel using the [Vercel GitHub import](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fagudajohn793%2FStellar-Transaction-Failure-Analyzer). Select `apps/web` as the project root, keep the detected Next.js framework and install settings, and use `npm run build` as the build command. The web workspace declares its own Tailwind/PostCSS and TypeScript build dependencies; the root lockfile still includes the local workspace packages. Ensure Vercel includes files outside the project root so those packages are available during build. Before announcing a public deployment, configure edge rate limiting for `/api/analyze`, verify the deployed URL and network lookups, and add the live URL to the GitHub repository's homepage field.
 
 ## Drips Wave proposal
 
