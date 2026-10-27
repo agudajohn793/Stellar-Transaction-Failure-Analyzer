@@ -22,6 +22,17 @@ export interface TransactionLookup {
   source: "rpc" | "horizon";
 }
 
+export class TransactionLookupError extends Error {
+  constructor(
+    message: string,
+    readonly status: 404 | 502 | 503,
+    readonly retryAfter?: string
+  ) {
+    super(message);
+    this.name = "TransactionLookupError";
+  }
+}
+
 interface HorizonTransaction {
   hash: string;
   ledger: number;
@@ -69,24 +80,43 @@ export async function lookupTransaction(
       headers: { Accept: "application/json" }
     });
   } catch {
-    throw new Error("Transaction lookup is unavailable from the selected network providers. Try again later.");
+    throw new TransactionLookupError(
+      "Transaction lookup is unavailable from the selected network providers. Try again later.",
+      503
+    );
   }
 
   if (response.status === 404) {
     if (rpcUnavailable) {
-      throw new Error("Transaction lookup failed: the RPC node was unavailable and Horizon has no matching transaction.");
+      throw new TransactionLookupError(
+        "Transaction lookup failed: the RPC node was unavailable and Horizon has no matching transaction.",
+        502
+      );
     }
-    throw new Error("Transaction was not found on this network. The selected providers may not retain its ledger.");
+    throw new TransactionLookupError(
+      "Transaction was not found on this network. The selected providers may not retain its ledger.",
+      404
+    );
+  }
+  if (response.status === 429) {
+    throw new TransactionLookupError(
+      "The network provider is rate-limiting lookups. Try again later.",
+      503,
+      response.headers.get("retry-after") ?? undefined
+    );
   }
   if (!response.ok) {
-    throw new Error("Transaction lookup is unavailable from the selected network providers. Try again later.");
+    throw new TransactionLookupError(
+      "Transaction lookup is unavailable from the selected network providers. Try again later.",
+      response.status >= 500 ? 503 : 502
+    );
   }
 
   let transaction: HorizonTransaction;
   try {
     transaction = await response.json() as HorizonTransaction;
   } catch {
-    throw new Error("Horizon returned an invalid transaction response.");
+    throw new TransactionLookupError("Horizon returned an invalid transaction response.", 502);
   }
 
   if (
@@ -96,7 +126,10 @@ export async function lookupTransaction(
     typeof transaction.result_xdr !== "string" ||
     !transaction.result_xdr
   ) {
-    throw new Error("Transaction lookup is unavailable from the selected network providers. Try again later.");
+    throw new TransactionLookupError(
+      "Transaction lookup is unavailable from the selected network providers. Try again later.",
+      502
+    );
   }
 
   return {

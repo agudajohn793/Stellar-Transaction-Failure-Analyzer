@@ -1,5 +1,9 @@
 import { diagnoseTransaction } from "@stellar-failure/diagnosis-engine";
-import { lookupTransaction, type StellarNetwork } from "@stellar-failure/stellar-client";
+import {
+  lookupTransaction,
+  TransactionLookupError,
+  type StellarNetwork
+} from "@stellar-failure/stellar-client";
 
 export const runtime = "nodejs";
 export const maxDuration = 25;
@@ -44,10 +48,10 @@ async function readLimitedBody(request: Request): Promise<string> {
   return new TextDecoder().decode(body);
 }
 
-function jsonResponse(body: unknown, status = 200): Response {
+function jsonResponse(body: unknown, status = 200, headers?: HeadersInit): Response {
   return Response.json(body, {
     status,
-    headers: { "Cache-Control": "no-store" }
+    headers: { "Cache-Control": "no-store", ...headers }
   });
 }
 
@@ -98,7 +102,13 @@ export async function POST(request: Request): Promise<Response> {
     return jsonResponse(diagnoseTransaction(transaction));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to look up this transaction.";
-    const status = message.startsWith("Transaction was not found") ? 404 : 502;
-    return jsonResponse({ error: message }, status);
+    if (error instanceof TransactionLookupError) {
+      return jsonResponse(
+        { error: message },
+        error.status,
+        error.retryAfter ? { "Retry-After": error.retryAfter } : undefined
+      );
+    }
+    return jsonResponse({ error: message }, 502);
   }
 }
