@@ -12,7 +12,7 @@
     "@stellar-failure/decoder": "1.0.0",
     "@stellar-failure/error-catalog": "1.0.0",
     "@stellar-failure/stellar-client": "1.0.0",
-    "lucide-react": "^0.468.0",
+    "lucide-react": "^1.61.0",
     "next": "^16.4.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
