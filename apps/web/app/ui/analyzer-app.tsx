@@ -247,7 +247,9 @@ export default function AnalyzerApp() {
                 {simulationSummary.minimumResourceFee !== undefined && <p>Minimum resource fee: {simulationSummary.minimumResourceFee} stroops</p>}
                 <p>Invocation result entries: {simulationSummary.resultCount} · Authorization entries: {simulationSummary.authorizationCount} · Diagnostic events: {simulationSummary.diagnosticEventCount}</p>
                 {simulationSummary.restorePreambleFee !== undefined && <p className="simulation-restore">Restore preamble present. Restore expired ledger entries before submitting this invocation (minimum resource fee: {simulationSummary.restorePreambleFee} stroops).</p>}
-                <pre>{simulationDetail}</pre><p className="muted-copy">Simulation is provisional and does not guarantee transaction inclusion. XDR fields are displayed as supplied and are not independently decoded here.</p></div>}
+              {simulationSummary.results.length > 0 && <div className="simulation-xdr-list"><h3>Invocation return values</h3>{simulationSummary.results.map((result, index) => <article key={`${index}-${result.rawXdr}`}><strong>Result {index + 1}</strong><code>{result.rawXdr}</code>{result.decodeError ? <p className="simulation-error">{result.decodeError}</p> : <pre>{formatSimulationValue(result.value)}</pre>}</article>)}</div>}
+              {simulationSummary.events.length > 0 && <div className="simulation-xdr-list"><h3>Diagnostic events</h3>{simulationSummary.events.map((event, index) => <article key={`${index}-${event.rawXdr}`}><strong>Event {index + 1}{event.type ? ` · ${event.type}` : ""}{event.inSuccessfulContractCall === undefined ? "" : event.inSuccessfulContractCall ? " · successful contract call" : " · failed contract call"}</strong>{event.contractId && <code>Contract: {event.contractId}</code>}<code>{event.rawXdr}</code>{event.decodeError ? <p className="simulation-error">{event.decodeError}</p> : <><p>Topics</p><pre>{formatSimulationValue(event.topics)}</pre><p>Data</p><pre>{formatSimulationValue(event.data)}</pre></>}</article>)}</div>}
+              <details className="simulation-raw"><summary>Original response JSON</summary><pre>{simulationDetail}</pre></details><p className="muted-copy">Simulation is provisional and does not guarantee transaction inclusion. Decoded values are inspection aids, not inferred failure causes.</p></div>}
               <div className="info-callout"><CircleHelp size={17} /><p>Simulation results are provisional. A successful simulation does not guarantee transaction inclusion; inspect the submitted transaction result XDR for a definitive diagnosis.</p></div>
             </section>
           )}
@@ -306,6 +308,12 @@ function ResultPanel({ report, onCopy, onDownload, copied }: {
 
 function PageIntro({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return <div className="page-intro"><div className="eyebrow"><span className="eyebrow-icon"><BookOpen size={13} /></span> {eyebrow}</div><h1>{title}</h1><p className="lead">{description}</p></div>;
+}
+
+function formatSimulationValue(value: unknown): string {
+  return JSON.stringify(value, (_key, item: unknown) =>
+    typeof item === "bigint" ? item.toString() : item, 2
+  ) ?? String(value);
 }
 
 function Documentation() {

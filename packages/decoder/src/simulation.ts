@@ -1,3 +1,21 @@
+import { humanizeEvents, scValToNative, xdr } from "@stellar/stellar-sdk";
+
+export interface DecodedSimulationResult {
+  rawXdr: string;
+  value?: unknown;
+  decodeError?: string;
+}
+
+export interface DecodedDiagnosticEvent {
+  rawXdr: string;
+  type?: "contract" | "diagnostic" | "system";
+  contractId?: string;
+  inSuccessfulContractCall?: boolean;
+  topics?: unknown[];
+  data?: unknown;
+  decodeError?: string;
+}
+
 export interface SimulationSummary {
   latestLedger?: number;
   error?: string;
@@ -6,10 +24,44 @@ export interface SimulationSummary {
   authorizationCount: number;
   diagnosticEventCount: number;
   restorePreambleFee?: string;
+  results: DecodedSimulationResult[];
+  events: DecodedDiagnosticEvent[];
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function decodeSimulationResult(rawXdr: string): DecodedSimulationResult {
+  try {
+    const value = xdr.ScVal.fromXdr(rawXdr, "base64");
+    return { rawXdr, value: scValToNative(value) };
+  } catch {
+    return { rawXdr, decodeError: "Unable to decode simulation result XDR." };
+  }
+}
+
+export function decodeDiagnosticEvents(events: string[]): DecodedDiagnosticEvent[] {
+  return events.map((rawXdr) => {
+    try {
+      const event = xdr.DiagnosticEvent.fromXdr(rawXdr, "base64");
+      const [humanized] = humanizeEvents([event]);
+      if (!humanized) {
+        return { rawXdr, decodeError: "Unable to decode diagnostic event XDR." };
+      }
+
+      return {
+        rawXdr,
+        type: humanized.type,
+        contractId: humanized.contractId,
+        inSuccessfulContractCall: event.inSuccessfulContractCall,
+        topics: humanized.topics,
+        data: humanized.data
+      };
+    } catch {
+      return { rawXdr, decodeError: "Unable to decode diagnostic event XDR." };
+    }
+  });
 }
 
 export function inspectSimulationResponse(value: unknown): SimulationSummary {
@@ -44,10 +96,12 @@ export function inspectSimulationResponse(value: unknown): SimulationSummary {
   }
 
   let authorizationCount = 0;
+  const decodedResults: DecodedSimulationResult[] = [];
   for (const result of results) {
     if (!isRecord(result) || typeof result.xdr !== "string") {
       throw new Error("Each simulation result must contain an XDR string.");
     }
+    decodedResults.push(decodeSimulationResult(result.xdr));
     if (result.auth !== undefined) {
       if (!Array.isArray(result.auth) || result.auth.some((entry) => typeof entry !== "string")) {
         throw new Error("Simulation result auth must be an array of base64 XDR strings.");
@@ -75,6 +129,8 @@ export function inspectSimulationResponse(value: unknown): SimulationSummary {
     resultCount: results.length,
     authorizationCount,
     diagnosticEventCount: events.length,
-    restorePreambleFee
+    restorePreambleFee,
+    results: decodedResults,
+    events: decodeDiagnosticEvents(events)
   };
 }
