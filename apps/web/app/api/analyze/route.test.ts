@@ -1,5 +1,27 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({ lookupTransaction: vi.fn() }));
+
+vi.mock("@stellar-failure/stellar-client", () => ({
+  lookupTransaction: mocks.lookupTransaction,
+  TransactionLookupError: class extends Error {
+    constructor(
+      message: string,
+      readonly status: 404 | 502 | 503,
+      readonly retryAfter?: string
+    ) {
+      super(message);
+      this.name = "TransactionLookupError";
+    }
+  }
+}));
+
 import { POST } from "./route";
+import { TransactionLookupError } from "@stellar-failure/stellar-client";
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
 
 function request(body: string, headers: HeadersInit = { "Content-Type": "application/json" }): Request {
   return new Request("http://localhost/api/analyze", {
@@ -53,5 +75,35 @@ describe("POST /api/analyze", () => {
       resultCode: "txInsufficientBalance",
       title: "Insufficient account balance"
     });
+  });
+
+  it("returns the provider's not-found status for an unavailable transaction", async () => {
+    mocks.lookupTransaction.mockRejectedValue(new TransactionLookupError(
+      "Transaction was not found on this network.",
+      404
+    ));
+    const response = await POST(request(JSON.stringify({
+      type: "hash",
+      transactionHash: "a".repeat(64),
+      network: "testnet"
+    })));
+
+    expect(response.status).toBe(404);
+  });
+
+  it("returns a retryable response and retry delay for provider rate limits", async () => {
+    mocks.lookupTransaction.mockRejectedValue(new TransactionLookupError(
+      "The network provider is rate-limiting lookups. Try again later.",
+      503,
+      "30"
+    ));
+    const response = await POST(request(JSON.stringify({
+      type: "hash",
+      transactionHash: "a".repeat(64),
+      network: "testnet"
+    })));
+
+    expect(response.status).toBe(503);
+    expect(response.headers.get("Retry-After")).toBe("30");
   });
 });

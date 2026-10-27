@@ -81,6 +81,30 @@ describe("lookupTransaction", () => {
     );
   });
 
+  it("preserves Horizon rate limits as a retryable provider error", async () => {
+    mocks.getTransaction.mockResolvedValue({ status: "NOT_FOUND" });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, {
+      status: 429,
+      headers: { "Retry-After": "30" }
+    })));
+
+    await expect(lookupTransaction(hash, "testnet")).rejects.toMatchObject({
+      name: "TransactionLookupError",
+      status: 503,
+      retryAfter: "30"
+    });
+  });
+
+  it("classifies Horizon server failures as temporarily unavailable", async () => {
+    mocks.getTransaction.mockResolvedValue({ status: "NOT_FOUND" });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 503 })));
+
+    await expect(lookupTransaction(hash, "testnet")).rejects.toMatchObject({
+      name: "TransactionLookupError",
+      status: 503
+    });
+  });
+
   it("validates the hash before contacting a provider", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

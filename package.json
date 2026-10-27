@@ -11,9 +11,11 @@
     "start": "npm run start -w @stellar-failure/web",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.15.0",
     "eslint": "^9.39.5",

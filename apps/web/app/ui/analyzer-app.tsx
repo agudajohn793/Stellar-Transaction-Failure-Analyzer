@@ -171,8 +171,8 @@ export default function AnalyzerApp() {
                 <div className="card-header">
                   <div className="card-title"><span className="step-number">01</span><div><h2>Analyze a transaction</h2><p>Look up a hash or decode a result directly.</p></div></div>
                   <div className="input-toggle" role="group" aria-label="Input type">
-                    <button className={inputMode === "hash" ? "selected" : ""} onClick={() => { setInputMode("hash"); setError(""); }} aria-pressed={inputMode === "hash"}><Search size={14} /> Hash lookup</button>
-                    <button className={inputMode === "xdr" ? "selected" : ""} onClick={() => { setInputMode("xdr"); setError(""); }} aria-pressed={inputMode === "xdr"}><FileCode2 size={14} /> Paste XDR</button>
+                    <button type="button" className={inputMode === "hash" ? "selected" : ""} onClick={() => { setInputMode("hash"); setError(""); }} aria-pressed={inputMode === "hash"}><Search size={14} /> Hash lookup</button>
+                    <button type="button" className={inputMode === "xdr" ? "selected" : ""} onClick={() => { setInputMode("xdr"); setError(""); }} aria-pressed={inputMode === "xdr"}><FileCode2 size={14} /> Paste XDR</button>
                   </div>
                 </div>
 
