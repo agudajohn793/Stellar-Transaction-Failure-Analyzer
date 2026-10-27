@@ -7,7 +7,7 @@
 
 Stellar developers often receive a failed transaction code without a clear explanation of what to inspect next. Stellar Trace decodes the transaction's actual result XDR, identifies operation- and fee-bump-level failures where available, and links known codes to protocol documentation. Unknown codes stay unknown: the tool does not guess causes from unrelated transaction data.
 
-[Run locally](#run-locally) · [Contribute](CONTRIBUTING.md) · [Proposed Drips Wave roadmap](docs/drips-wave-proposal.md) · [Open issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues)
+[Run locally](#run-locally) · [Contribute](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Proposed Drips Wave roadmap](docs/drips-wave-proposal.md) · [Open issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues)
 
 ## Features
 
