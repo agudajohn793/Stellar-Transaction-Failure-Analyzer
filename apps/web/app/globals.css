@@ -144,6 +144,9 @@ h1 { margin-bottom: 7px; font: 700 clamp(25px, 3vw, 32px)/1.22 var(--display); l
 .operations-heading > span { color: #99a4aa; font-size: 9px; }
 .operation-row { display: grid; grid-template-columns: 35px minmax(0, 1fr) minmax(115px, auto) 52px; gap: 10px; align-items: center; padding: 11px 15px; border-bottom: 1px solid #f0f3f4; }
 .operation-row:last-child { border-bottom: 0; }
+.operation-row.operation-failed { border-left: 3px solid #d96868; background: #fff7f6; }
+.operation-failed .op-index { color: #b94f50; font-weight: 700; }
+.failed-operation-reference { margin-top: 10px !important; color: #a64e4e !important; font-weight: 600; }
 .op-index { color: #a0aaaf; font: 10px var(--mono); }
 .op-main { min-width: 0; display: grid; gap: 3px; }
 .op-main strong { color: #41515b; font-size: 10px; text-transform: capitalize; }

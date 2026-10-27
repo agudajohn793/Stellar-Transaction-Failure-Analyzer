@@ -3,6 +3,7 @@ import { diagnoseTransaction } from "./index";
 import fixtures from "../../../fixtures/failed-transactions/transaction-results.json";
 import feeBumpFixture from "../../../fixtures/failed-transactions/fee-bump-inner-failure.json";
 import testnetSamples from "../../../fixtures/failed-transactions/testnet-horizon-samples.json";
+import operationFailureFixtures from "../../../fixtures/failed-transactions/operation-breakdown.json";
 
 describe("diagnoseTransaction", () => {
   it("uses documented mappings for known transaction result codes", () => {
@@ -43,6 +44,33 @@ describe("diagnoseTransaction", () => {
       resultCode: fixtures.paymentUnderfunded.operationResultCode,
       failed: true
     })]);
+  });
+
+  it("preserves the original one-based failure index after successful operations", () => {
+    const report = diagnoseTransaction({
+      resultXdr: operationFailureFixtures.successBeforeFailure
+    });
+
+    expect(report.title).toBe("Payment source is underfunded");
+    expect(report.primaryFailedOperation).toEqual({
+      index: 2,
+      operationType: "payment",
+      resultCode: "paymentUnderfunded"
+    });
+    expect(report.operations.map(({ index, failed }) => ({ index, failed }))).toEqual([
+      { index: 1, failed: false },
+      { index: 2, failed: true }
+    ]);
+  });
+
+  it("does not promote an unmapped operation result to the transaction diagnosis", () => {
+    const report = diagnoseTransaction({
+      resultXdr: operationFailureFixtures.unmappedOperationFailure
+    });
+
+    expect(report.title).toBe("Unmapped transaction result");
+    expect(report.known).toBe(false);
+    expect(report.primaryFailedOperation).toBeUndefined();
   });
 
   it("explains the inner failure of a fee-bump transaction", () => {

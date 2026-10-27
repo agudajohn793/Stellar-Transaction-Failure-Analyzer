@@ -276,6 +276,7 @@ function ResultPanel({ report, onCopy, onDownload, copied }: {
         <div className="diagnosis-status"><span className="status-icon">{report.status === "failed" ? <TriangleAlert size={18} /> : <Check size={18} />}</span><span>{report.status === "failed" ? "TRANSACTION FAILED" : "TRANSACTION SUCCEEDED"}</span><span className="diagnosis-code">{report.resultCode}{report.innerResultCode ? ` · ${report.innerResultCode}` : ""}</span></div>
         <h3>{report.title}</h3>
         <p>{report.explanation}</p>
+        {report.primaryFailedOperation && <p className="failed-operation-reference">Mapped from operation {report.primaryFailedOperation.index}: {report.primaryFailedOperation.operationType} · {report.primaryFailedOperation.resultCode}</p>}
         {report.checks.length > 0 && <div className="suggested-checks"><strong>SUGGESTED CHECKS</strong>{report.checks.map((check) => <div key={check}><span>—</span>{check}</div>)}</div>}
         <div className="provenance">
           {report.known && report.sourceUrl ? <a href={report.sourceUrl} target="_blank" rel="noreferrer">View protocol source <ArrowUpRight size={13} /></a> : <span className="unmapped"><CircleHelp size={13} /> No documented mapping</span>}
@@ -291,7 +292,7 @@ function ResultPanel({ report, onCopy, onDownload, copied }: {
       <div className="operations-card">
         <div className="operations-heading"><div><Layers3 size={16} /><h3>Operation breakdown</h3></div><span>{report.operations.length} decoded</span></div>
         {report.operations.length ? report.operations.map((operation) => (
-          <div className={`operation-row ${operation.failed ? "operation-failed" : ""}`} key={`${operation.index}-${operation.resultCode}`}>
+          <div className={`operation-row ${operation.failed ? "operation-failed" : ""}`} key={`${operation.index}-${operation.resultCode}`} aria-label={`Operation ${operation.index}: ${operation.failed ? "failed" : "succeeded"}`}>
             <span className="op-index">{String(operation.index).padStart(2, "0")}</span>
             <div className="op-main"><strong>{operation.operationType ?? "Transaction-level result"}</strong><span>{operation.title}</span></div>
             <code>{operation.resultCode}</code>
