@@ -33,7 +33,7 @@ The intended users are application developers, integrators, and maintainers of S
 - Public Vercel demo at <https://stellar-transaction-failure-analyze-ten.vercel.app/>; homepage and a known-XDR API diagnosis smoke-tested 2026-10-27.
 - Documented result mappings, including operation-level and fee-bump reporting.
 - Sourced public Testnet failed-result samples with transaction links, ledger numbers, captured XDR, and offline regression tests.
-- Simulation response schema inspection; embedded simulation XDR is not yet decoded.
+- Simulation response inspection with decoded invocation return values and diagnostic-event XDR; raw response data remains available.
 - Automated regression, route, client, catalog, lint, type-check, production-build, and dependency-audit checks.
 - Public backlog and contribution guidance.
 

@@ -77,7 +77,7 @@ npm run build
 
 ## Scope and limitations
 
-Only documented result codes in the catalog receive a diagnosis. Other codes remain visible with an “unmapped” explanation. Operation-level results are shown only when present in the decoded XDR. Fee-bump failures retain both the outer and inner result codes. A standard RPC node may not retain older transactions; Horizon is attempted as a fallback, but archival coverage depends on the selected network's provider. This MVP accepts a base64-encoded XDR `TransactionResult`, not arbitrary transaction envelopes. The simulation inspector validates and summarizes raw RPC response fields but does not decode their embedded XDR payloads.
+Only documented result codes in the catalog receive a diagnosis. Other codes remain visible with an “unmapped” explanation. Operation-level results are shown only when present in the decoded XDR. Fee-bump failures retain both the outer and inner result codes. A standard RPC node may not retain older transactions; Horizon is attempted as a fallback, but archival coverage depends on the selected network's provider. This MVP accepts a base64-encoded XDR `TransactionResult`, not arbitrary transaction envelopes. The simulation inspector decodes raw invocation return-value and diagnostic-event XDR for inspection, preserves the original response JSON, and labels undecodable payloads without inferring their cause.
 
 For a public deployment, configure edge-level rate limiting for `/api/analyze` to protect upstream public-node quotas. The application intentionally has no process-local limiter because it would not be reliable across serverless instances.
 

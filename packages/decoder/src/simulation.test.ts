@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { inspectSimulationResponse } from "./simulation";
+import { decodeDiagnosticEvents, inspectSimulationResponse } from "./simulation";
+import fixture from "../../../fixtures/simulation-results/xdr-payloads.json";
 
 describe("inspectSimulationResponse", () => {
-  it("extracts documented simulation fields without interpreting XDR payloads", () => {
+  it("decodes simulation return values and diagnostic events while preserving raw XDR", () => {
     expect(inspectSimulationResponse({
       latestLedger: 123,
       minResourceFee: "100",
-      results: [{ xdr: "base64-value", auth: ["auth-xdr"] }],
-      events: ["diagnostic-event-xdr"],
+      results: [{ xdr: fixture.resultXdr, auth: ["auth-xdr"] }],
+      events: [fixture.eventXdr],
       restorePreamble: {
         minResourceFee: "200",
         transactionData: "transaction-data-xdr"
@@ -19,7 +20,45 @@ describe("inspectSimulationResponse", () => {
       resultCount: 1,
       authorizationCount: 1,
       diagnosticEventCount: 1,
-      restorePreambleFee: "200"
+      restorePreambleFee: "200",
+      results: [{
+        rawXdr: fixture.resultXdr,
+        value: "contract return value"
+      }],
+      events: [{
+        rawXdr: fixture.eventXdr,
+        type: "diagnostic",
+        contractId: undefined,
+        inSuccessfulContractCall: false,
+        topics: ["log"],
+        data: "fixture event data"
+      }]
+    });
+  });
+
+  it("retains malformed XDR and exposes decode errors without rejecting the response", () => {
+    const summary = inspectSimulationResponse({
+      results: [{ xdr: fixture.malformedXdr }],
+      events: [fixture.malformedXdr]
+    });
+
+    expect(summary.results[0]).toEqual({
+      rawXdr: fixture.malformedXdr,
+      decodeError: "Unable to decode simulation result XDR."
+    });
+    expect(summary.events[0]).toEqual({
+      rawXdr: fixture.malformedXdr,
+      decodeError: "Unable to decode diagnostic event XDR."
+    });
+  });
+
+  it("decodes event lists independently so one invalid event does not hide valid events", () => {
+    const decoded = decodeDiagnosticEvents([fixture.eventXdr, fixture.malformedXdr]);
+
+    expect(decoded[0].topics).toEqual(["log"]);
+    expect(decoded[1]).toEqual({
+      rawXdr: fixture.malformedXdr,
+      decodeError: "Unable to decode diagnostic event XDR."
     });
   });
 
