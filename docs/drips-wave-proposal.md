@@ -29,6 +29,7 @@ The intended users are application developers, integrators, and maintainers of S
 - Reusable TypeScript packages for TransactionResult decoding, catalog lookup, diagnosis, and public-network lookup.
 - Testnet/Mainnet lookup using RPC with a Horizon fallback.
 - Documented result mappings, including operation-level and fee-bump reporting.
+- Sourced public Testnet failed-result samples with transaction links, ledger numbers, captured XDR, and offline regression tests.
 - Simulation response schema inspection; embedded simulation XDR is not yet decoded.
 - Automated regression, route, client, catalog, lint, type-check, production-build, and dependency-audit checks.
 - Public backlog and contribution guidance.

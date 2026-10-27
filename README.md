@@ -16,6 +16,7 @@ Stellar developers often receive a failed transaction code without a clear expla
 - Inspect transaction and available operation result codes, with explanations linked to Stellar documentation.
 - Copy or download a JSON report; browse the known-error library and integration notes.
 - Reusable TypeScript packages for decoding, error mappings, diagnosis, and network lookup.
+- A regression corpus of synthetic cases and sourced public Testnet failures, with transaction hashes and ledgers recorded for traceability.
 
 The app does not persist submitted hashes or results. Hash lookups are sent by the web server to the selected public Stellar RPC and Horizon providers; review those providers' policies before submitting sensitive transaction identifiers.
 
@@ -32,13 +33,13 @@ The repository does not currently have a hosted demo. To run it locally:
 3. Run `npm run dev`, then open http://localhost:3000.
 4. Choose **Paste XDR** and paste a base64 Stellar `TransactionResult`, or look up a 64-character transaction hash on Testnet or Mainnet.
 
-For a quick, known XDR test, paste:
+For a quick, synthetic XDR test, paste:
 
 ```text
 AAAAAAAAAGT////5AAAAAA==
 ```
 
-This decodes to `txInsufficientBalance`. It is a synthetic regression fixture, not a live transaction.
+This decodes to `txInsufficientBalance`. The repository also includes reproducible public Testnet failure samples in [`fixtures/failed-transactions/testnet-horizon-samples.json`](fixtures/failed-transactions/testnet-horizon-samples.json); provider history can change or be pruned, so the captured XDR is kept as an offline regression fixture.
 
 ## Requirements
 

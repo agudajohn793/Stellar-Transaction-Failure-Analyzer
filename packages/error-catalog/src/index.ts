@@ -186,6 +186,265 @@ export const errorCatalog: ErrorMapping[] = [
     sourceUrl: operationDocs
   },
   {
+    code: "pathPaymentStrictReceiveUnderfunded",
+    title: "Path payment source is underfunded",
+    explanation: "The path payment source cannot provide enough of the asset being sold to deliver the requested destination amount.",
+    checks: ["Check the source balance and selling liabilities in the source asset.", "Review the payment path and maximum send amount."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendUnderfunded",
+    title: "Path payment source is underfunded",
+    explanation: "The path payment source cannot provide the requested amount of the asset being sent.",
+    checks: ["Check the source balance and selling liabilities in the send asset.", "Review the payment path and requested send amount."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveNoDestination",
+    title: "Path payment destination does not exist",
+    explanation: "The destination account for the path payment does not exist.",
+    checks: ["Verify the destination account ID.", "Create and fund the destination account before sending the path payment."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendNoDestination",
+    title: "Path payment destination does not exist",
+    explanation: "The destination account for the path payment does not exist.",
+    checks: ["Verify the destination account ID.", "Create and fund the destination account before sending the path payment."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveTooFewOffers",
+    title: "No viable path payment route",
+    explanation: "The order book did not provide enough offers to complete the path payment.",
+    checks: ["Check whether the path assets have active offers and liquidity.", "Review the path and adjust the destination amount or send maximum."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendTooFewOffers",
+    title: "No viable path payment route",
+    explanation: "The order book did not provide enough offers to complete the path payment.",
+    checks: ["Check whether the path assets have active offers and liquidity.", "Review the path and adjust the amount being sent."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveNoTrust",
+    title: "Path payment account has no trustline",
+    explanation: "An account involved in the path payment lacks a trustline for an asset required by the path.",
+    checks: ["Inspect trustlines for the source, destination, and intermediate path assets.", "Confirm each asset issuer and code."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendNoTrust",
+    title: "Path payment account has no trustline",
+    explanation: "An account involved in the path payment lacks a trustline for an asset required by the path.",
+    checks: ["Inspect trustlines for the source, destination, and intermediate path assets.", "Confirm each asset issuer and code."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveSrcNoTrust",
+    title: "Path payment source has no trustline",
+    explanation: "The path payment source lacks a trustline for the asset it must sell.",
+    checks: ["Confirm the source has a trustline for the send asset.", "Verify the asset code and issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendSrcNoTrust",
+    title: "Path payment source has no trustline",
+    explanation: "The path payment source lacks a trustline for the asset it must sell.",
+    checks: ["Confirm the source has a trustline for the send asset.", "Verify the asset code and issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveSrcNotAuthorized",
+    title: "Path payment source is not authorized",
+    explanation: "The source trustline is not authorized to send the asset required by the path payment.",
+    checks: ["Check the source trustline's authorization state.", "Ask the issuer to authorize the trustline if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendSrcNotAuthorized",
+    title: "Path payment source is not authorized",
+    explanation: "The source trustline is not authorized to send the asset required by the path payment.",
+    checks: ["Check the source trustline's authorization state.", "Ask the issuer to authorize the trustline if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveNotAuthorized",
+    title: "Path payment trustline is not authorized",
+    explanation: "A trustline required by the path payment is not authorized to hold the asset.",
+    checks: ["Inspect the destination and intermediate trustlines for authorization state.", "Ask the relevant issuer to authorize the trustline if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendNotAuthorized",
+    title: "Path payment trustline is not authorized",
+    explanation: "A trustline required by the path payment is not authorized to hold the asset.",
+    checks: ["Inspect the destination and intermediate trustlines for authorization state.", "Ask the relevant issuer to authorize the trustline if required."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveLineFull",
+    title: "Path payment trustline is full",
+    explanation: "A destination or intermediate trustline cannot receive the amount required by the path.",
+    checks: ["Check the affected trustline's balance and limit.", "Review the path and reduce the amount if appropriate."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendLineFull",
+    title: "Path payment trustline is full",
+    explanation: "A destination or intermediate trustline cannot receive the amount required by the path.",
+    checks: ["Check the affected trustline's balance and limit.", "Review the path and reduce the amount if appropriate."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveNoIssuer",
+    title: "Path payment asset issuer does not exist",
+    explanation: "An issuer for an asset in the path does not exist on the selected network.",
+    checks: ["Verify the issuer IDs for every asset in the path.", "Confirm the selected network and asset definitions."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendNoIssuer",
+    title: "Path payment asset issuer does not exist",
+    explanation: "An issuer for an asset in the path does not exist on the selected network.",
+    checks: ["Verify the issuer IDs for every asset in the path.", "Confirm the selected network and asset definitions."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveOfferCrossSelf",
+    title: "Path payment would cross the source's offer",
+    explanation: "The path payment would cross an offer owned by its source account, which the protocol does not allow.",
+    checks: ["Review open offers owned by the source account.", "Adjust the path or cancel the conflicting offer before retrying."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendOfferCrossSelf",
+    title: "Path payment would cross the source's offer",
+    explanation: "The path payment would cross an offer owned by its source account, which the protocol does not allow.",
+    checks: ["Review open offers owned by the source account.", "Adjust the path or cancel the conflicting offer before retrying."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictReceiveOverSendmax",
+    title: "Path payment exceeds send maximum",
+    explanation: "The path would require sending more than the maximum amount allowed by the operation.",
+    checks: ["Review the path's available exchange rates and liquidity.", "Increase the send maximum or choose a different path."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "pathPaymentStrictSendUnderDestmin",
+    title: "Path payment is below destination minimum",
+    explanation: "The destination would receive less than the minimum amount specified by the operation.",
+    checks: ["Review current exchange rates and path liquidity.", "Adjust the destination minimum or use a different path."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "changeTrustNoIssuer",
+    title: "Trustline asset issuer does not exist",
+    explanation: "The issuer account for the asset in the change-trust operation does not exist.",
+    checks: ["Verify the asset issuer account ID.", "Confirm the selected network and asset definition."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "changeTrustInvalidLimit",
+    title: "Invalid trustline limit",
+    explanation: "The requested trustline limit is invalid for the asset or existing balance.",
+    checks: ["Check that the limit is non-negative and not below the current balance.", "Review the asset and trustline being changed."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "changeTrustLowReserve",
+    title: "Insufficient reserve for trustline",
+    explanation: "The account cannot meet the minimum XLM reserve required to create or modify this trustline.",
+    checks: ["Check the account's available XLM and current minimum balance.", "Review subentries and sponsorship relationships."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferUnderfunded",
+    title: "Sell offer is underfunded",
+    explanation: "The selling account cannot cover the amount of the asset offered for sale.",
+    checks: ["Check the selling asset balance.", "Account for selling liabilities from other open offers."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferUnderfunded",
+    title: "Buy offer is underfunded",
+    explanation: "The buying account cannot cover the buying liabilities required by the offer.",
+    checks: ["Check the buying asset balance.", "Account for buying liabilities from other open offers."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferSellNoTrust",
+    title: "Sell offer has no selling-asset trustline",
+    explanation: "The account has no trustline for the asset it is offering to sell.",
+    checks: ["Add a trustline for the selling asset.", "Verify its asset code and issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferSellNoTrust",
+    title: "Buy offer has no selling-asset trustline",
+    explanation: "The account has no trustline for the asset it is offering to sell.",
+    checks: ["Add a trustline for the selling asset.", "Verify its asset code and issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferBuyNoTrust",
+    title: "Sell offer has no buying-asset trustline",
+    explanation: "The account has no trustline for the asset it expects to receive.",
+    checks: ["Add a trustline for the buying asset if it is not native XLM.", "Verify its asset code and issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferBuyNoTrust",
+    title: "Buy offer has no buying-asset trustline",
+    explanation: "The account has no trustline for the asset it expects to receive.",
+    checks: ["Add a trustline for the buying asset if it is not native XLM.", "Verify its asset code and issuer."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageSellOfferLowReserve",
+    title: "Insufficient reserve for sell offer",
+    explanation: "The account cannot meet the minimum XLM reserve required for the offer's ledger entry.",
+    checks: ["Check the account's available XLM and minimum balance.", "Review existing offers, subentries, and sponsorship."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "manageBuyOfferLowReserve",
+    title: "Insufficient reserve for buy offer",
+    explanation: "The account cannot meet the minimum XLM reserve required for the offer's ledger entry.",
+    checks: ["Check the account's available XLM and minimum balance.", "Review existing offers, subentries, and sponsorship."],
+    sourceUrl: operationDocs
+  },
+  {
+    code: "invokeHostFunctionTrapped",
+    title: "Soroban host function trapped",
+    explanation: "The Soroban host function failed during execution. This result code alone does not identify the contract-level cause.",
+    checks: ["Inspect the transaction's Soroban diagnostic events, if available.", "Reproduce the invocation with simulation using the same inputs and ledger state.", "Review contract logs and the exact invocation arguments."],
+    sourceUrl: "https://developers.stellar.org/docs/learn/fundamentals/contract-development/errors-and-debugging"
+  },
+  {
+    code: "invokeHostFunctionResourceLimitExceeded",
+    title: "Soroban resource limit exceeded",
+    explanation: "The Soroban invocation exceeded a protocol resource limit during execution.",
+    checks: ["Simulate the exact transaction and inspect CPU, memory, read/write, and event resource usage.", "Review the contract path and input size; do not assume a higher fee alone resolves the limit."],
+    sourceUrl: "https://developers.stellar.org/docs/learn/fundamentals/contract-development/errors-and-debugging"
+  },
+  {
+    code: "invokeHostFunctionEntryArchived",
+    title: "Soroban ledger entry needs restoration",
+    explanation: "The invocation accessed an archived ledger entry that must be restored before it can be used.",
+    checks: ["Inspect the transaction's simulation restore preamble.", "Restore the required footprint entries and then simulate the invocation again."],
+    sourceUrl: "https://developers.stellar.org/docs/learn/fundamentals/contract-development/state-archival"
+  },
+  {
+    code: "invokeHostFunctionInsufficientRefundableFee",
+    title: "Soroban refundable fee is insufficient",
+    explanation: "The Soroban transaction did not provide enough refundable fee for the resources required by the invocation.",
+    checks: ["Simulate the exact transaction and inspect its resource fee estimate.", "Rebuild and re-sign using the current simulation results and ledger state."],
+    sourceUrl: "https://developers.stellar.org/docs/learn/fundamentals/contract-development/errors-and-debugging"
+  },
+  {
     code: "createAccountUnderfunded",
     title: "Insufficient balance to create account",
     explanation: "The account-creation operation's source does not have enough XLM for the starting balance and resulting reserve requirements.",

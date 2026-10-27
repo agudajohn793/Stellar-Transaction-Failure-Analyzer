@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { diagnoseTransaction } from "./index";
 import fixtures from "../../../fixtures/failed-transactions/transaction-results.json";
 import feeBumpFixture from "../../../fixtures/failed-transactions/fee-bump-inner-failure.json";
+import testnetSamples from "../../../fixtures/failed-transactions/testnet-horizon-samples.json";
 
 describe("diagnoseTransaction", () => {
   it("uses documented mappings for known transaction result codes", () => {
@@ -53,6 +54,17 @@ describe("diagnoseTransaction", () => {
     expect(report.innerResultCode).toBe(feeBumpFixture.innerResultCode);
     expect(report.title).toBe("Insufficient account balance");
     expect(report.known).toBe(true);
+  });
+
+  it("diagnoses sourced public Testnet failures with their recorded operation codes", () => {
+    for (const fixture of testnetSamples.records) {
+      const report = diagnoseTransaction({ resultXdr: fixture.resultXdr });
+
+      expect(report.status).toBe("failed");
+      expect(report.resultCode).toBe(fixture.resultCode);
+      expect(report.operations.map((operation) => operation.resultCode)).toContain(fixture.operationResultCode);
+      expect(report.known).toBe(true);
+    }
   });
 
   it("rejects malformed XDR with an actionable message", () => {
