@@ -3,6 +3,7 @@ import { diagnoseTransaction } from "./index";
 import fixtures from "../../../fixtures/failed-transactions/transaction-results.json";
 import feeBumpFixture from "../../../fixtures/failed-transactions/fee-bump-inner-failure.json";
 import testnetSamples from "../../../fixtures/failed-transactions/testnet-horizon-samples.json";
+import simulationFixture from "../../../fixtures/simulation-results/xdr-payloads.json";
 
 describe("diagnoseTransaction", () => {
   it("uses documented mappings for known transaction result codes", () => {
@@ -65,6 +66,41 @@ describe("diagnoseTransaction", () => {
       expect(report.operations.map((operation) => operation.resultCode)).toContain(fixture.operationResultCode);
       expect(report.known).toBe(true);
     }
+  });
+
+  it("includes decoded transaction diagnostic events when the provider supplies them", () => {
+    const report = diagnoseTransaction({
+      resultXdr: fixtures.insufficientBalance.resultXdr,
+      source: "rpc",
+      diagnosticEventsXdr: [simulationFixture.eventXdr]
+    });
+
+    expect(report.diagnosticEvents).toEqual([
+      expect.objectContaining({
+        rawXdr: simulationFixture.eventXdr,
+        type: "diagnostic",
+        contractId: undefined,
+        inSuccessfulContractCall: false,
+        topics: ["log"],
+        data: "fixture event data"
+      })
+    ]);
+  });
+
+  it("keeps unavailable and undecodable transaction event data explicit", () => {
+    const unavailable = diagnoseTransaction({ resultXdr: fixtures.insufficientBalance.resultXdr });
+    const malformed = diagnoseTransaction({
+      resultXdr: fixtures.insufficientBalance.resultXdr,
+      diagnosticEventsXdr: ["not-xdr"]
+    });
+
+    expect(unavailable.diagnosticEvents).toBeUndefined();
+    expect(malformed.diagnosticEvents).toEqual([
+      expect.objectContaining({
+        rawXdr: "not-xdr",
+        decodeError: "Unable to decode diagnostic event XDR."
+      })
+    ]);
   });
 
   it("rejects malformed XDR with an actionable message", () => {
