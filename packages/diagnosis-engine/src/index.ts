@@ -1,4 +1,9 @@
-import { decodeTransactionResult, type DecodedOperationResult } from "@stellar-failure/decoder";
+import {
+  decodeDiagnosticEvents,
+  decodeTransactionResult,
+  type DecodedDiagnosticEvent,
+  type DecodedOperationResult
+} from "@stellar-failure/decoder";
 import { getErrorMapping } from "@stellar-failure/error-catalog";
 
 export interface TransactionInput {
@@ -7,6 +12,7 @@ export interface TransactionInput {
   network?: "testnet" | "mainnet";
   ledger?: number;
   source?: "rpc" | "horizon" | "xdr";
+  diagnosticEventsXdr?: string[];
 }
 
 export interface OperationDiagnosis extends DecodedOperationResult {
@@ -33,6 +39,7 @@ export interface TransactionDiagnosis {
   feeCharged: string;
   operations: OperationDiagnosis[];
   primaryFailedOperation?: Pick<OperationDiagnosis, "index" | "operationType" | "resultCode">;
+  diagnosticEvents?: DecodedDiagnosticEvent[];
 }
 
 const unknownMessage = "No documented explanation is available in this catalog for this result code. The decoded code is shown without inferring a cause.";
@@ -84,6 +91,9 @@ export function diagnoseTransaction(input: TransactionInput): TransactionDiagnos
           operationType: mappedFailedOperation.operationType,
           resultCode: mappedFailedOperation.resultCode
         }
-      : undefined
+      : undefined,
+    diagnosticEvents: input.diagnosticEventsXdr === undefined
+      ? undefined
+      : decodeDiagnosticEvents(input.diagnosticEventsXdr)
   };
 }

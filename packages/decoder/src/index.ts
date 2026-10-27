@@ -1,6 +1,6 @@
 import { xdr } from "@stellar/stellar-sdk";
-export { inspectSimulationResponse } from "./simulation";
-export type { SimulationSummary } from "./simulation";
+export { decodeDiagnosticEvents, inspectSimulationResponse } from "./simulation";
+export type { DecodedDiagnosticEvent, DecodedSimulationResult, SimulationSummary } from "./simulation";
 
 export interface DecodedOperationResult {
   index: number;
