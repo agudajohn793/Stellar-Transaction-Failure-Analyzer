@@ -1,0 +1,24 @@
+{
+  "name": "@stellar-failure/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@stellar-failure/diagnosis-engine": "1.0.0",
+    "@stellar-failure/decoder": "1.0.0",
+    "@stellar-failure/error-catalog": "1.0.0",
+    "@stellar-failure/stellar-client": "1.0.0",
+    "lucide-react": "^0.468.0",
+    "next": "^16.4.3",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0"
+  }
+}
