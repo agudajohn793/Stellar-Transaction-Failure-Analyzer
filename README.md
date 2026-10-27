@@ -7,7 +7,7 @@
 
 Stellar developers often receive a failed transaction code without a clear explanation of what to inspect next. Stellar Trace decodes the transaction's actual result XDR, identifies operation- and fee-bump-level failures where available, and links known codes to protocol documentation. Unknown codes stay unknown: the tool does not guess causes from unrelated transaction data.
 
-[Run locally](#run-locally) · [Contribute](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Proposed Drips Wave roadmap](docs/drips-wave-proposal.md) · [Open issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues)
+[Run locally](#run-locally) · [Contribute](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Give feedback](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38) · [Proposed Drips Wave roadmap](docs/drips-wave-proposal.md) · [Open issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues)
 
 ## Features
 
@@ -23,6 +23,8 @@ The app does not persist submitted hashes or results. Hash lookups are sent by t
 ## Project status
 
 This is an early, independently maintained MVP. It has a tested diagnosis engine and working web interface, but does not yet have a hosted demo, published npm packages, or reported external user-validation results. The planned work is tracked in [GitHub issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues); contributions and real-world feedback are welcome.
+
+Stellar developers are invited to [try the offline Testnet examples and share feedback](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38). No external user validation is claimed until feedback is received and summarized.
 
 ## Try it
 

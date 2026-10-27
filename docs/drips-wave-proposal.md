@@ -2,6 +2,8 @@
 
 > **Draft only.** This document is project preparation, not a submitted application, grant award, or claim of acceptance. Confirm an active Stellar Wave, its eligibility rules, deliverable format, timeline, and reward process with Drips before applying.
 
+> **Eligibility status (checked 2026-10-27):** Drips' [public homepage](https://www.drips.network/) describes recurring Waves as rewarding merged pull requests. It does not provide an active Stellar Wave's eligibility rules or a submission link. This proposal therefore cannot establish that a standalone project application is currently eligible; confirm the exact Wave and whether it accepts this model before submitting.
+
 ## Project
 
 **Name:** Stellar Trace — Stellar Transaction Failure Analyzer
@@ -34,35 +36,35 @@ The intended users are application developers, integrators, and maintainers of S
 - Automated regression, route, client, catalog, lint, type-check, production-build, and dependency-audit checks.
 - Public backlog and contribution guidance.
 
-**Known gaps:** no hosted demo, no published SDK packages, limited error-code coverage, no external usage metrics, and no deployment-level rate limiter configured in this repository. Do not present these as completed deliverables.
+**Known gaps:** no hosted demo, no published SDK packages, limited error-code coverage, no external user feedback yet, no external usage metrics, and no deployment-level rate limiter configured in this repository. A public [feedback request](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38) is open; it is not evidence that validation has occurred. Do not present these as completed deliverables.
 
 ## Proposed milestones
 
-These are estimates for discussion. Adapt the scope and schedule to the active Wave's terms before submitting.
+These are deliverable-based work packages, not commitments to an unverified Wave. Map them to the active Wave's issue, PR, schedule, and reward rules before submitting; omit any item the Wave does not accept.
 
-### 1. Evidence-backed diagnostic coverage
+### 1. Decode and explain Soroban failures
 
-- Expand mappings for frequently encountered payment, trustline, sponsorship, fee, and Soroban failures.
-- Add XDR regression fixtures and source links for every mapping.
-- Decode Soroban simulation result and diagnostic-event XDR where supported by the SDK.
+- Decode simulation result and diagnostic-event XDR with explicit handling for missing or unknown fields.
+- Add exact Soroban failure fixtures and source links for every new interpretation.
+- Keep unsupported or ambiguous results explicitly unmapped rather than inferring a contract cause.
 
-**Acceptance evidence:** catalog-to-SDK enum validation, fixture-backed tests, and a public list of supported codes with source links.
+**Acceptance evidence:** a reviewable PR, fixture-backed decoder tests, and a generated supported-code reference whose entries link to protocol or official documentation.
 
-### 2. Reliable lookup and integration surface
+### 2. Harden lookup and package integration
 
-- Improve provider error, timeout, and rate-limit handling.
-- Add a versioned API/report contract and independently consumable diagnosis package exports.
-- Document archival provider setup and retention limitations.
+- Test RPC and Horizon not-found, timeout, rate-limit, malformed-response, and fallback behavior.
+- Publish a versioned report/API contract and prove the diagnosis package works from a clean consumer project.
+- Document archival coverage, provider retention, and safe deployment rate limiting.
 
-**Acceptance evidence:** provider matrix tests, package consumer example, and deployment documentation.
+**Acceptance evidence:** provider matrix tests, a clean-install consumer example, and deployment instructions that identify the rate-limiting boundary.
 
-### 3. Usable, accessible release
+### 3. Validate the user workflow
 
-- Add end-to-end browser coverage and accessibility checks.
-- Deploy a public demo with edge-level API rate limiting.
-- Gather feedback from Stellar developers and publish a summary without overstating sample size.
+- Cover XDR paste, known failure diagnosis, unmapped result, JSON export, and network lookup in browser tests.
+- Check keyboard and screen-reader status announcements on those workflows.
+- Deploy a public demo only after edge-level API rate limiting is configured; collect and summarize genuine developer feedback with sample size and limitations.
 
-**Acceptance evidence:** working demo URL, browser/keyboard test results, deployment configuration, and dated feedback summary.
+**Acceptance evidence:** browser/accessibility results, a verified demo URL and rate-limit configuration, plus a dated feedback summary that distinguishes responses received from outreach still pending. If deployment or external feedback is outside Wave scope, leave it clearly marked incomplete.
 
 ## Success measures
 
@@ -90,7 +92,7 @@ This project is specifically built around Stellar transaction-result XDR, Stella
 
 ## Before submitting
 
-1. Confirm the active Drips Stellar Wave is accepting projects and read its current eligibility and submission rules.
+1. Obtain the exact active Stellar Wave URL and confirm that it accepts this type of project and these deliverables; the Drips homepage alone does not establish eligibility.
 2. Deploy and verify the demo; add its URL to the repository homepage.
 3. Replace this draft's estimates with the Wave's actual deadline, scope, and required deliverable format.
 4. Add genuine user feedback or usage evidence if available; otherwise state that validation is pending.
