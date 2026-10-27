@@ -7,7 +7,7 @@
 
 Stellar developers often receive a failed transaction code without a clear explanation of what to inspect next. Stellar Trace decodes the transaction's actual result XDR, identifies operation- and fee-bump-level failures where available, and links known codes to protocol documentation. Unknown codes stay unknown: the tool does not guess causes from unrelated transaction data.
 
-[Run locally](#run-locally) · [Contribute](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Give feedback](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38) · [Proposed Drips Wave roadmap](docs/drips-wave-proposal.md) · [Open issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues)
+[Live demo](https://stellar-transaction-failure-analyze-ten.vercel.app/) · [Run locally](#run-locally) · [Contribute](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Give feedback](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38) · [Proposed Drips Wave roadmap](docs/drips-wave-proposal.md) · [Open issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues)
 
 ## Features
 
@@ -22,13 +22,13 @@ The app does not persist submitted hashes or results. Hash lookups are sent by t
 
 ## Project status
 
-This is an early, independently maintained MVP. It has a tested diagnosis engine and working web interface, but does not yet have a hosted demo, published npm packages, or reported external user-validation results. The planned work is tracked in [GitHub issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues); contributions and real-world feedback are welcome.
+This is an early, independently maintained MVP. It has a tested diagnosis engine, a working web interface, and a [live demo](https://stellar-transaction-failure-analyze-ten.vercel.app/). It does not yet have published npm packages or reported external user-validation results. The planned work is tracked in [GitHub issues](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues); contributions and real-world feedback are welcome.
 
 Stellar developers are invited to [try the offline Testnet examples and share feedback](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38). No external user validation is claimed until feedback is received and summarized.
 
 ## Try it
 
-The repository does not currently have a hosted demo. To run it locally:
+Try the [live demo](https://stellar-transaction-failure-analyze-ten.vercel.app/), or run it locally:
 
 1. Install Node.js 22.12 or newer and npm.
 2. Clone this repository and run `npm ci`.
@@ -83,7 +83,9 @@ For a public deployment, configure edge-level rate limiting for `/api/analyze` t
 
 ## Deployment
 
-Deploy this repository to Vercel using the [Vercel GitHub import](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fagudajohn793%2FStellar-Transaction-Failure-Analyzer). Select `apps/web` as the project root, keep the detected Next.js framework and install settings, and use `npm run build` as the build command. The web workspace declares its own Tailwind/PostCSS and TypeScript build dependencies; the root lockfile still includes the local workspace packages. Ensure Vercel includes files outside the project root so those packages are available during build. Before announcing a public deployment, configure edge rate limiting for `/api/analyze`, verify the deployed URL and network lookups, and add the live URL to the GitHub repository's homepage field.
+The [live Vercel deployment](https://stellar-transaction-failure-analyze-ten.vercel.app/) is configured from this repository. Its homepage and XDR diagnosis API were smoke-tested on 2026-10-27. The deployment has not yet been verified under rate limiting; configure edge-level rate limiting for `/api/analyze` before broad public promotion. The GitHub repository homepage field may also be set to the demo URL.
+
+To reproduce the deployment, use the [Vercel GitHub import](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fagudajohn793%2FStellar-Transaction-Failure-Analyzer). Select `apps/web` as the project root, keep the detected Next.js framework and install settings, and use `npm run build` as the build command. The web workspace declares its own Tailwind/PostCSS and TypeScript build dependencies; the root lockfile still includes the local workspace packages. Ensure Vercel includes files outside the project root so those packages are available during build.
 
 ## Drips Wave proposal
 

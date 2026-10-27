@@ -30,13 +30,14 @@ The intended users are application developers, integrators, and maintainers of S
 - Working Next.js application and API route.
 - Reusable TypeScript packages for TransactionResult decoding, catalog lookup, diagnosis, and public-network lookup.
 - Testnet/Mainnet lookup using RPC with a Horizon fallback.
+- Public Vercel demo at <https://stellar-transaction-failure-analyze-ten.vercel.app/>; homepage and a known-XDR API diagnosis smoke-tested 2026-10-27.
 - Documented result mappings, including operation-level and fee-bump reporting.
 - Sourced public Testnet failed-result samples with transaction links, ledger numbers, captured XDR, and offline regression tests.
 - Simulation response schema inspection; embedded simulation XDR is not yet decoded.
 - Automated regression, route, client, catalog, lint, type-check, production-build, and dependency-audit checks.
 - Public backlog and contribution guidance.
 
-**Known gaps:** no hosted demo, no published SDK packages, limited error-code coverage, no external user feedback yet, no external usage metrics, and no deployment-level rate limiter configured in this repository. A public [feedback request](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38) is open; it is not evidence that validation has occurred. Do not present these as completed deliverables.
+**Known gaps:** no published SDK packages, limited error-code coverage, no external user feedback yet, no external usage metrics, and no verified deployment-level rate limiter. The live demo has only had a basic availability and known-XDR smoke test, not sustained-availability or provider-load testing. A public [feedback request](https://github.com/agudajohn793/Stellar-Transaction-Failure-Analyzer/issues/38) is open; it is not evidence that validation has occurred. Do not present these as completed deliverables.
 
 ## Proposed milestones
 
@@ -62,9 +63,9 @@ These are deliverable-based work packages, not commitments to an unverified Wave
 
 - Cover XDR paste, known failure diagnosis, unmapped result, JSON export, and network lookup in browser tests.
 - Check keyboard and screen-reader status announcements on those workflows.
-- Deploy a public demo only after edge-level API rate limiting is configured; collect and summarize genuine developer feedback with sample size and limitations.
+- Configure and verify edge-level API rate limiting on the live demo; collect and summarize genuine developer feedback with sample size and limitations.
 
-**Acceptance evidence:** browser/accessibility results, a verified demo URL and rate-limit configuration, plus a dated feedback summary that distinguishes responses received from outreach still pending. If deployment or external feedback is outside Wave scope, leave it clearly marked incomplete.
+**Acceptance evidence:** browser/accessibility results, verified rate-limit behavior for the [live demo](https://stellar-transaction-failure-analyze-ten.vercel.app/), plus a dated feedback summary that distinguishes responses received from outreach still pending. If rate limiting or external feedback is outside Wave scope, leave it clearly marked incomplete.
 
 ## Success measures
 
@@ -93,7 +94,7 @@ This project is specifically built around Stellar transaction-result XDR, Stella
 ## Before submitting
 
 1. Obtain the exact active Stellar Wave URL and confirm that it accepts this type of project and these deliverables; the Drips homepage alone does not establish eligibility.
-2. Deploy and verify the demo; add its URL to the repository homepage.
+2. Verify the live demo, configure and test edge rate limiting, and add its URL to the repository homepage.
 3. Replace this draft's estimates with the Wave's actual deadline, scope, and required deliverable format.
 4. Add genuine user feedback or usage evidence if available; otherwise state that validation is pending.
 5. Submit through the Wave's official process. This document alone does not enroll the repository.
