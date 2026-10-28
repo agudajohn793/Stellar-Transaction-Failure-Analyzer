@@ -23,6 +23,7 @@ export interface SimulationSummary {
   resultCount: number;
   authorizationCount: number;
   diagnosticEventCount: number;
+  eventsProvided: boolean;
   restorePreambleFee?: string;
   results: DecodedSimulationResult[];
   events: DecodedDiagnosticEvent[];
@@ -129,6 +130,7 @@ export function inspectSimulationResponse(value: unknown): SimulationSummary {
     resultCount: results.length,
     authorizationCount,
     diagnosticEventCount: events.length,
+    eventsProvided: value.events !== undefined,
     restorePreambleFee,
     results: decodedResults,
     events: decodeDiagnosticEvents(events)

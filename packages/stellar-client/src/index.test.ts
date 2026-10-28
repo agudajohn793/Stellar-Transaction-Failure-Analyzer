@@ -28,13 +28,15 @@ describe("lookupTransaction", () => {
       status: "FAILED",
       txHash: hash.toUpperCase(),
       ledger: 42,
-      resultXdr: { toXdr: () => "rpc-result-xdr" }
+      resultXdr: { toXdr: () => "rpc-result-xdr" },
+      diagnosticEventsXdr: [{ toXdr: () => "diagnostic-event-xdr" }]
     });
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(lookupTransaction(hash, "testnet")).resolves.toEqual({
       resultXdr: "rpc-result-xdr",
+      diagnosticEventsXdr: ["diagnostic-event-xdr"],
       transactionHash: hash,
       ledger: 42,
       network: "testnet",

@@ -20,6 +20,7 @@ describe("inspectSimulationResponse", () => {
       resultCount: 1,
       authorizationCount: 1,
       diagnosticEventCount: 1,
+      eventsProvided: true,
       restorePreambleFee: "200",
       results: [{
         rawXdr: fixture.resultXdr,
@@ -64,6 +65,7 @@ describe("inspectSimulationResponse", () => {
 
   it("preserves RPC error text and rejects invalid response shapes", () => {
     expect(inspectSimulationResponse({ error: "Host function failed" }).error).toBe("Host function failed");
+    expect(inspectSimulationResponse({}).eventsProvided).toBe(false);
     expect(() => inspectSimulationResponse([])).toThrow("must be a JSON object");
     expect(() => inspectSimulationResponse({ results: [{ xdr: 1 }] })).toThrow("XDR string");
     expect(() => inspectSimulationResponse({ latestLedger: -1 })).toThrow("non-negative integer");

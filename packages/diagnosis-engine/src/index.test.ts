@@ -3,6 +3,7 @@ import { diagnoseTransaction } from "./index";
 import fixtures from "../../../fixtures/failed-transactions/transaction-results.json";
 import feeBumpFixture from "../../../fixtures/failed-transactions/fee-bump-inner-failure.json";
 import testnetSamples from "../../../fixtures/failed-transactions/testnet-horizon-samples.json";
+import diagnosticFixture from "../../../fixtures/simulation-results/xdr-payloads.json";
 
 describe("diagnoseTransaction", () => {
   it("uses documented mappings for known transaction result codes", () => {
@@ -43,6 +44,48 @@ describe("diagnoseTransaction", () => {
       resultCode: fixtures.paymentUnderfunded.operationResultCode,
       failed: true
     })]);
+  });
+
+  it("keeps a successful earlier operation distinct from the failing operation", () => {
+    const report = diagnoseTransaction({ resultXdr: fixtures.successfulOperationBeforeFailure.resultXdr });
+
+    expect(report.title).toBe("Payment source is underfunded");
+    expect(report.failingOperationIndex).toBe(2);
+    expect(report.operations).toEqual([
+      expect.objectContaining({
+        index: 1,
+        operationType: "payment",
+        resultCode: "paymentSuccess",
+        failed: false
+      }),
+      expect.objectContaining({
+        index: 2,
+        operationType: "payment",
+        resultCode: "paymentUnderfunded",
+        failed: true
+      })
+    ]);
+  });
+
+  it("decodes diagnostic events while keeping them separate from transaction causes", () => {
+    const report = diagnoseTransaction({
+      resultXdr: fixtures.paymentUnderfunded.resultXdr,
+      diagnosticEventsXdr: [diagnosticFixture.eventXdr, diagnosticFixture.malformedXdr]
+    });
+
+    expect(report.title).toBe("Payment source is underfunded");
+    expect(report.diagnosticEvents).toEqual([
+      expect.objectContaining({
+        type: "diagnostic",
+        topics: ["log"],
+        data: "fixture event data",
+        inSuccessfulContractCall: false
+      }),
+      expect.objectContaining({
+        rawXdr: diagnosticFixture.malformedXdr,
+        decodeError: "Unable to decode diagnostic event XDR."
+      })
+    ]);
   });
 
   it("explains the inner failure of a fee-bump transaction", () => {

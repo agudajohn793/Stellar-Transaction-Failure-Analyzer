@@ -15,6 +15,7 @@ const endpoints: Record<StellarNetwork, { rpc: string; horizon: string }> = {
 
 export interface TransactionLookup {
   resultXdr: string;
+  diagnosticEventsXdr?: string[];
   transactionHash: string;
   ledger?: number;
   network: StellarNetwork;
@@ -49,6 +50,7 @@ export async function lookupTransaction(
       }
       return {
         resultXdr: response.resultXdr.toXdr("base64"),
+        diagnosticEventsXdr: response.diagnosticEventsXdr?.map((event) => event.toXdr("base64")),
         transactionHash,
         ledger: response.ledger,
         network,
