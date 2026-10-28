@@ -1,4 +1,9 @@
-import { decodeTransactionResult, type DecodedOperationResult } from "@stellar-failure/decoder";
+import {
+  decodeDiagnosticEvents,
+  decodeTransactionResult,
+  type DecodedDiagnosticEvent,
+  type DecodedOperationResult
+} from "@stellar-failure/decoder";
 import { getErrorMapping } from "@stellar-failure/error-catalog";
 
 export interface TransactionInput {
@@ -7,6 +12,7 @@ export interface TransactionInput {
   network?: "testnet" | "mainnet";
   ledger?: number;
   source?: "rpc" | "horizon" | "xdr";
+  diagnosticEventsXdr?: string[];
 }
 
 export interface OperationDiagnosis extends DecodedOperationResult {
@@ -32,6 +38,8 @@ export interface TransactionDiagnosis {
   source?: "rpc" | "horizon" | "xdr";
   feeCharged: string;
   operations: OperationDiagnosis[];
+  failingOperationIndex?: number;
+  diagnosticEvents?: DecodedDiagnosticEvent[];
 }
 
 const unknownMessage = "No documented explanation is available in this catalog for this result code. The decoded code is shown without inferring a cause.";
@@ -53,12 +61,9 @@ export function diagnoseTransaction(input: TransactionInput): TransactionDiagnos
   const mapping = getErrorMapping(decoded.innerResultCode ?? decoded.resultCode);
   const failed = decoded.resultCode !== "txSuccess" && decoded.resultCode !== "txFeeBumpInnerSuccess";
   const operations = decoded.operations.map(diagnoseOperation);
-  const failedOperation = operations.find((operation) => operation.failed && operation.known);
-  const topMapping = mapping ?? (
-    decoded.resultCode === "txFailed" || decoded.innerResultCode === "txFailed"
-      ? failedOperation
-      : undefined
-  );
+  const failedOperation = operations.find((operation) => operation.failed);
+  const mappedFailedOperation = failedOperation?.known ? failedOperation : undefined;
+  const topMapping = mappedFailedOperation ?? mapping;
 
   return {
     status: failed ? "failed" : "success",
@@ -74,6 +79,10 @@ export function diagnoseTransaction(input: TransactionInput): TransactionDiagnos
     ledger: input.ledger,
     source: input.source ?? "xdr",
     feeCharged: decoded.feeCharged,
-    operations
+    operations,
+    failingOperationIndex: mappedFailedOperation?.index,
+    diagnosticEvents: input.diagnosticEventsXdr === undefined
+      ? undefined
+      : decodeDiagnosticEvents(input.diagnosticEventsXdr)
   };
 }

@@ -11,5 +11,10 @@
     "resultXdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAB/////gAAAAA=",
     "resultCode": "txFailed",
     "operationResultCode": "paymentUnderfunded"
+  },
+  "successfulOperationBeforeFailure": {
+    "resultXdr": "AAAAAAAAAGT/////AAAAAgAAAAAAAAABAAAAAAAAAAAAAAAB/////gAAAAA=",
+    "resultCode": "txFailed",
+    "operationResultCodes": ["paymentSuccess", "paymentUnderfunded"]
   }
 }

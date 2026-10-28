@@ -24,7 +24,11 @@ import {
 } from "lucide-react";
 import { errorCatalog } from "@stellar-failure/error-catalog";
 import type { TransactionDiagnosis } from "@stellar-failure/diagnosis-engine";
-import { inspectSimulationResponse, type SimulationSummary } from "@stellar-failure/decoder";
+import {
+  inspectSimulationResponse,
+  type DecodedDiagnosticEvent,
+  type SimulationSummary
+} from "@stellar-failure/decoder";
 
 type View = "analyze" | "simulation" | "library" | "docs";
 type InputMode = "hash" | "xdr";
@@ -248,7 +252,7 @@ export default function AnalyzerApp() {
                 <p>Invocation result entries: {simulationSummary.resultCount} · Authorization entries: {simulationSummary.authorizationCount} · Diagnostic events: {simulationSummary.diagnosticEventCount}</p>
                 {simulationSummary.restorePreambleFee !== undefined && <p className="simulation-restore">Restore preamble present. Restore expired ledger entries before submitting this invocation (minimum resource fee: {simulationSummary.restorePreambleFee} stroops).</p>}
               {simulationSummary.results.length > 0 && <div className="simulation-xdr-list"><h3>Invocation return values</h3>{simulationSummary.results.map((result, index) => <article key={`${index}-${result.rawXdr}`}><strong>Result {index + 1}</strong><code>{result.rawXdr}</code>{result.decodeError ? <p className="simulation-error">{result.decodeError}</p> : <pre>{formatSimulationValue(result.value)}</pre>}</article>)}</div>}
-              {simulationSummary.events.length > 0 && <div className="simulation-xdr-list"><h3>Diagnostic events</h3>{simulationSummary.events.map((event, index) => <article key={`${index}-${event.rawXdr}`}><strong>Event {index + 1}{event.type ? ` · ${event.type}` : ""}{event.inSuccessfulContractCall === undefined ? "" : event.inSuccessfulContractCall ? " · successful contract call" : " · failed contract call"}</strong>{event.contractId && <code>Contract: {event.contractId}</code>}<code>{event.rawXdr}</code>{event.decodeError ? <p className="simulation-error">{event.decodeError}</p> : <><p>Topics</p><pre>{formatSimulationValue(event.topics)}</pre><p>Data</p><pre>{formatSimulationValue(event.data)}</pre></>}</article>)}</div>}
+              <DiagnosticEventList events={simulationSummary.events} eventsProvided={simulationSummary.eventsProvided} />
               <details className="simulation-raw"><summary>Original response JSON</summary><pre>{simulationDetail}</pre></details><p className="muted-copy">Simulation is provisional and does not guarantee transaction inclusion. Decoded values are inspection aids, not inferred failure causes.</p></div>}
               <div className="info-callout"><CircleHelp size={17} /><p>Simulation results are provisional. A successful simulation does not guarantee transaction inclusion; inspect the submitted transaction result XDR for a definitive diagnosis.</p></div>
             </section>
@@ -268,6 +272,9 @@ function ResultPanel({ report, onCopy, onDownload, copied }: {
   copied: boolean;
 }) {
   const hasFailedOperation = report.operations.some((operation) => operation.failed);
+  const mappedFailedOperation = report.failingOperationIndex === undefined
+    ? undefined
+    : report.operations.find((operation) => operation.index === report.failingOperationIndex);
   return (
     <section className="result-panel" aria-live="polite">
       <div className="result-heading">
@@ -276,6 +283,7 @@ function ResultPanel({ report, onCopy, onDownload, copied }: {
       </div>
       <div className={`diagnosis-card ${report.status}`}>
         <div className="diagnosis-status"><span className="status-icon">{report.status === "failed" ? <TriangleAlert size={18} /> : <Check size={18} />}</span><span>{report.status === "failed" ? "TRANSACTION FAILED" : "TRANSACTION SUCCEEDED"}</span><span className="diagnosis-code">{report.resultCode}{report.innerResultCode ? ` · ${report.innerResultCode}` : ""}</span></div>
+        {mappedFailedOperation && <p className="failure-operation-label">Failure mapped to operation {mappedFailedOperation.index}{mappedFailedOperation.operationType ? ` · ${mappedFailedOperation.operationType}` : ""}</p>}
         <h3>{report.title}</h3>
         <p>{report.explanation}</p>
         {report.checks.length > 0 && <div className="suggested-checks"><strong>SUGGESTED CHECKS</strong>{report.checks.map((check) => <div key={check}><span>—</span>{check}</div>)}</div>}
@@ -301,6 +309,11 @@ function ResultPanel({ report, onCopy, onDownload, copied }: {
           </div>
         )) : <div className="no-operations">{hasFailedOperation ? "Operation result details are unavailable." : "No operation result details are present for this transaction result."}</div>}
       </div>
+      <DiagnosticEventList
+        events={report.diagnosticEvents}
+        eventsProvided={report.diagnosticEvents !== undefined}
+        title="Contract invocation diagnostics"
+      />
       <div className="hash-reference"><span>TRANSACTION HASH</span><code>{report.transactionHash ?? "Not provided (XDR input)"}</code><button onClick={onCopy} aria-label="Copy full JSON report"><Clipboard size={14} /></button></div>
     </section>
   );
@@ -314,6 +327,38 @@ function formatSimulationValue(value: unknown): string {
   return JSON.stringify(value, (_key, item: unknown) =>
     typeof item === "bigint" ? item.toString() : item, 2
   ) ?? String(value);
+}
+
+function DiagnosticEventList({ events, eventsProvided, title = "Diagnostic events" }: {
+  events: DecodedDiagnosticEvent[] | undefined;
+  eventsProvided: boolean;
+  title?: string;
+}) {
+  return (
+    <div className="simulation-xdr-list diagnostic-event-list">
+      <h3>{title}</h3>
+      {!eventsProvided
+        ? <p className="diagnostic-event-empty">Diagnostic event data was not supplied with this result.</p>
+        : events?.length
+          ? events.map((event, index) => (
+            <article key={`${index}-${event.rawXdr}`}>
+              <strong>Event {index + 1} · {event.type ?? "unknown event type"}{event.inSuccessfulContractCall === undefined
+                ? " · contract-call status unavailable"
+                : event.inSuccessfulContractCall ? " · successful contract call" : " · failed contract call"}</strong>
+              <code>{event.rawXdr}</code>
+              {event.decodeError
+                ? <p className="simulation-error">{event.decodeError} Contract, topics, and data are unavailable because this event could not be decoded.</p>
+                : <>
+                  <p>Contract</p><code>{event.contractId ?? "Not present in decoded event"}</code>
+                  <p>Topics</p>{event.topics === undefined ? <p>Not present in decoded event</p> : <pre>{formatSimulationValue(event.topics)}</pre>}
+                  <p>Data</p>{event.data === undefined ? <p>Not present in decoded event</p> : <pre>{formatSimulationValue(event.data)}</pre>}
+                </>}
+            </article>
+          ))
+          : <p className="diagnostic-event-empty">No diagnostic events were returned.</p>}
+      <p className="diagnostic-event-note">Diagnostic events provide invocation context; they do not establish the failure cause.</p>
+    </div>
+  );
 }
 
 function Documentation() {
